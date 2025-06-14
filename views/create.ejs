@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create</title>
+</head>
+<body>
+    
+    <!--post form to insert data-->
+    <form action="/insert" method="POST">
+        <input name="username" placeholder="Your Name" required/>
+        <input name="title" placeholder="Book Title" required/>
+        <input name="author" placeholder="Author" required/>
+        <input name="cover_id" placeholder="Cover ID"/>
+        <input name="rating" type="number" min="0" max="10" required/>
+        <textarea name="review" placeholder="What did you think?"></textarea>
+        <input name="date_read" type="date" required />
+        <button type="submit">Add Book</button>
+
+
+
+
+
+
+
+
+
+    </form>
+</body>
+</html>
