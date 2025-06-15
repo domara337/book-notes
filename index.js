@@ -8,7 +8,13 @@ import path from "path";
 const app=express();
 const port=3000;
 
-
+//database_setup
+const db=new pg.Client({
+    user:"postgres",
+    host:"localhost",
+    database:"book_notes",
+    
+})
 
 
 //middleware setup
