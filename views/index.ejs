@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/styles.css">
-    <title>Book notes</title>
+  <title>Book Notes</title>
 </head>
 <body>
-   <form action="/insert" method="GET">
-    <button type="submit">Create</button>
-
-   </form>
+  <h1>Books List</h1>
+  <a href="/insert">Add New Book</a>
+  <ul>
+    <% books.forEach(book => { %>
+      <li>
+        <h3><%= book.title %> by <%= book.author %></h3>
+        <% if (book.cover_id) { %>
+          <img src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-M.jpg" alt="Book Cover" />
+        <% } else { %>
+          <p>No cover available</p>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
 </body>
 </html>

@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import path from "path";
+import axios from "axios"; 
 
 const app = express();
 const port = 3000;
@@ -20,23 +21,52 @@ const db = new pg.Client({
   port: 5432,
 });
 
+
+//database connection 
 db.connect().then(() => {
   console.log("Connected to database.");
 }).catch(err => {
   console.error("Database connection error:", err.stack);
 });
 
-// Routes
+
+async function fetchCoverBookId(title, author) {
+  try {
+    const result = await axios.get('https://openlibrary.org/search.json', {
+      params: { title, author }
+    });
+
+    // Find the first book where title and author match (or partial match) and has cover_i
+    const book = result.data.docs.find(b => 
+      b.cover_i &&
+      b.title.toLowerCase().includes(title.toLowerCase()) &&
+      b.author_name?.some(a => a.toLowerCase().includes(author.toLowerCase()))
+    );
+
+    if (book) {
+      console.log(`Found cover id: ${book.cover_i}`);
+      return book.cover_i;
+    } else {
+      console.log("No book with cover found matching title and author");
+      return null;
+    }
+  } catch (err) {
+    console.error("Error fetching the book cover", err);
+    return null;
+  }
+}
+
+//routes
 app.get("/insert", (req, res) => {
-  res.render("create.ejs");
+  res.render("create.ejs"); // create.ejs contains your form for adding books/reviews
 });
+
 
 app.post("/add_books", async (req, res) => {
   const {
     username,
     title,
     author,
-    cover_id,
     rating,
     review,
     date_read,
@@ -68,6 +98,10 @@ app.post("/add_books", async (req, res) => {
 
     let book_id;
     if (bookResult.rows.length === 0) {
+
+        const cover_id=await fetchCoverBookId(title,author);
+
+
       const insertBook = await db.query(
         "INSERT INTO books(title, author, cover_id) VALUES ($1, $2, $3) RETURNING id",
         [title, author, cover_id]
@@ -90,8 +124,17 @@ app.post("/add_books", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.render("index.ejs");
+app.get("/", async (req, res) => {
+  try {
+    // Get all books with their cover_id, title, author from DB
+    const result = await db.query("SELECT title, author, cover_id FROM books");
+    const books = result.rows;
+
+    res.render("index.ejs", { books }); // pass the array of books to EJS
+  } catch (err) {
+    console.error("Error loading home page:", err.stack);
+    res.status(500).send("Error loading the home page.");
+  }
 });
 
 app.listen(port, () => {
