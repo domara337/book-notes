@@ -1,0 +1,32 @@
+
+.main-nav-bar{
+    display: flex;
+    border: 2px solid black;
+    flex-direction: row;
+    justify-content: space-between;
+      align-items: center; /* 👈 Optional: vertically align h1 and nav */
+ 
+  padding: 5px;
+}
+
+.main-nav-bar ul {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+.main-nav-bar a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+
+.main-nav-bar a:hover{
+    color: blue;
+    text-decoration: underline;
+}

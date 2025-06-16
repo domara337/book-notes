@@ -1,22 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Book Notes</title>
-</head>
-<body>
-  <h1>Books List</h1>
-  <a href="/insert">Add New Book</a>
-  <ul>
-    <% books.forEach(book => { %>
-      <li>
-        <h3><%= book.title %> by <%= book.author %></h3>
+<%- include('partials/header', { title: 'Books List' }) %>
+
+<div class="container my-5">
+  <h1 class="mb-4 text-primary">Books List</h1>
+  <a href="/insert" class="btn btn-success mb-4">Add New Book</a>
+
+
+  <!--loop through the books database and find the cover_id-->
+  <% books.forEach(book => { %>
+    
+
+    <div class="row mb-5 p-3 bg-dark text-light rounded shadow-sm">
+      <div class="col-md-3 text-center mb-3 mb-md-0">
         <% if (book.cover_id) { %>
-          <img src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-M.jpg" alt="Book Cover" />
+          <img src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-M.jpg" alt="Book Cover" class="img-fluid rounded" />
         <% } else { %>
           <p>No cover available</p>
         <% } %>
-      </li>
-    <% }) %>
-  </ul>
-</body>
-</html>
+      </div>
+      
+      <!--book details-->
+      <div class="col-md-9">
+        <h3 class="text-info"><%= book.title %> by <%= book.author %></small></h3>
+        
+        <!--filter the review-->
+        <% const matchingUserBooks=userBooks.filter(userBook=> Number(userBook.book_id)===Number(book.id)) %>
+       
+
+
+        <% if (matchingUserBooks.length > 0) { %>
+          <% matchingUserBooks.forEach(userbook => { %>
+            <% if (userbook.review) { %>
+              <p><%= userbook.review %></p>
+            <% } else { %>
+              <p>No reviews available.</p>
+            <% } %>
+          <% }) %>
+        <% } else { %>
+          <p>No reviews available.</p>
+        <% } %>
+
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('partials/footer') %>

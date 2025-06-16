@@ -12,15 +12,13 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-// Database setup
 const db = new pg.Client({
   user: "postgres",
   host: "localhost",
-  database: "booknotes", // ensure this DB exists
-  password: "domadb11223344_",
+  database: "booknotes",
+  password:"doma11223344_",
   port: 5432,
 });
-
 
 //database connection 
 db.connect().then(() => {
@@ -127,10 +125,12 @@ app.post("/add_books", async (req, res) => {
 app.get("/", async (req, res) => {
   try {
     // Get all books with their cover_id, title, author from DB
-    const result = await db.query("SELECT title, author, cover_id FROM books");
+    const result = await db.query("SELECT id,title, author, cover_id FROM books");
+    const result2=await db.query("SELECT * FROM user_books")
     const books = result.rows;
-
-    res.render("index.ejs", { books }); // pass the array of books to EJS
+    const userBooks=result2.rows;
+    console.log(userBooks);
+    res.render("index.ejs", { books, userBooks}); // pass the array of books to EJS
   } catch (err) {
     console.error("Error loading home page:", err.stack);
     res.status(500).send("Error loading the home page.");
