@@ -60,6 +60,8 @@ app.get("/insert", (req, res) => {
 });
 
 
+
+//post method to add new books 
 app.post("/add_books", async (req, res) => {
   const {
     username,
@@ -122,10 +124,12 @@ app.post("/add_books", async (req, res) => {
   }
 });
 
+
+//get-route
 app.get("/", async (req, res) => {
   try {
     // Get all books with their cover_id, title, author from DB
-    const result = await db.query("SELECT id,title, author, cover_id FROM books");
+    const result = await db.query("SELECT * FROM books");
     const result2=await db.query("SELECT * FROM user_books")
     const books = result.rows;
     const userBooks=result2.rows;
@@ -137,6 +141,24 @@ app.get("/", async (req, res) => {
   }
 });
 
+
+
+
+//delete route
+app.post("/delete", async (req,res)=>{
+  let bookID=req.body.deleteItemId;
+ console.log(bookID)
+  try{
+  await db.query("DELETE FROM books WHERE id=$1", [bookID])
+  console.log("deleting book with id: ",[bookID]);
+
+  res.redirect("/");
+  }
+  catch(err){
+    console.log("there was an error deleting your task: " , err.stack)
+  }
+  
+})
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

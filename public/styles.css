@@ -30,3 +30,9 @@
     color: blue;
     text-decoration: underline;
 }
+
+small{
+  color: lightgray;
+  font-size: small;
+  padding-bottom: 10px;
+}

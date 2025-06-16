@@ -1,5 +1,8 @@
 <%- include('partials/header', { title: 'Books List' }) %>
 
+
+
+
 <div class="container my-5">
   <h1 class="mb-4 text-primary">Books List</h1>
   <a href="/insert" class="btn btn-success mb-4">Add New Book</a>
@@ -21,7 +24,20 @@
       <!--book details-->
       <div class="col-md-9">
         <h3 class="text-info"><%= book.title %> by <%= book.author %></small></h3>
-        
+      
+      <!--delete form-->
+      <form action="/delete"  method="POST">
+        <input type="hidden" name="deleteItemId" value="<%=book.id%>">
+        <button type="submit" class="btn btn-danger btn-sm">delete</button>
+
+
+
+      </form>
+      
+      
+      
+      
+      
         <!--filter the review-->
         <% const matchingUserBooks=userBooks.filter(userBook=> Number(userBook.book_id)===Number(book.id)) %>
        
@@ -29,6 +45,10 @@
 
         <% if (matchingUserBooks.length > 0) { %>
           <% matchingUserBooks.forEach(userbook => { %>
+             <!--display the date read and reccomendation-->
+           <small class="recommendation">DATE READ: <%= new Date(userbook.date_read).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %> 
+            HOW STRONGLY I RECOMMEND IT:- <%= userbook.rating %>/10</small>
+
             <% if (userbook.review) { %>
               <p><%= userbook.review %></p>
             <% } else { %>
