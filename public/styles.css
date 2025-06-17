@@ -1,7 +1,7 @@
 
 .main-nav-bar{
     display: flex;
-    border: 2px solid black;
+    border-bottom: 2px solid black;
     flex-direction: row;
     justify-content: space-between;
       align-items: center; /* 👈 Optional: vertically align h1 and nav */
