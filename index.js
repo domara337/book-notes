@@ -141,7 +141,23 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.post("/edit" ,async (req,res)=>{
+  const {book_id, date_read,review,rating }=req.body;
 
+
+  //sql query to update the fields
+  try{
+    await db.query("UPDATE user_books SET date_read=$1, review=$2, rating=$3 WHERE book_id=$4",
+      [date_read, review, rating, book_id],
+    
+     )
+  res.redirect("/")
+
+  }
+  catch(err){
+      console.log("error updating the table: " , err.stack)
+  }
+})
 
 
 //delete route
