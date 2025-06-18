@@ -20,6 +20,9 @@ const db = new pg.Client({
   port: 5432,
 });
 
+
+
+
 //database connection 
 db.connect().then(() => {
   console.log("Connected to database.");
@@ -28,6 +31,9 @@ db.connect().then(() => {
 });
 
 
+
+
+//to fetch the cover-id 
 async function fetchCoverBookId(title, author) {
   try {
     const result = await axios.get('https://openlibrary.org/search.json', {
@@ -99,12 +105,12 @@ app.post("/add_books", async (req, res) => {
     let book_id;
     if (bookResult.rows.length === 0) {
 
-        const cover_id=await fetchCoverBookId(title,author);
+     const cover_id=await fetchCoverBookId(title,author);
 
 
-      const insertBook = await db.query(
-        "INSERT INTO books(title, author, cover_id) VALUES ($1, $2, $3) RETURNING id",
-        [title, author, cover_id]
+    const insertBook = await db.query(
+      "INSERT INTO books(title, author, cover_id) VALUES ($1, $2, $3) RETURNING id",
+      [title, author, cover_id]
       );
       book_id = insertBook.rows[0].id;
     } else {
@@ -134,13 +140,16 @@ app.get("/", async (req, res) => {
     const books = result.rows;
     const userBooks=result2.rows;
     console.log(userBooks);
-    res.render("index.ejs", { books, userBooks}); // pass the array of books to EJS
+    res.render("index.ejs", { books, userBooks:userBooks}); // pass the array of books to EJS
   } catch (err) {
     console.error("Error loading home page:", err.stack);
     res.status(500).send("Error loading the home page.");
   }
 });
 
+
+
+//editing route
 app.post("/edit" ,async (req,res)=>{
   const {book_id, date_read,review,rating }=req.body;
 
@@ -165,6 +174,9 @@ app.post("/delete", async (req,res)=>{
   let bookID=req.body.deleteItemId;
  console.log(bookID)
   try{
+  
+    //deleting from the userbooks and book table to have consistency 
+  await db.query("DELETE FROM user_books WHERE book_id=$1", [bookID]);
   await db.query("DELETE FROM books WHERE id=$1", [bookID])
   console.log("deleting book with id: ",[bookID]);
 
@@ -175,6 +187,29 @@ app.post("/delete", async (req,res)=>{
   }
   
 })
+
+
+
+
+// e.g. /sort?order=asc or /sort?order=desc
+app.get("/sort", async (req, res) => {
+ 
+  //use query parameter to compare and order 
+  const order = req.query.order === "desc" ? "DESC" : "ASC";
+
+  try {
+    const result = await db.query(`SELECT * FROM books ORDER BY title ${order}`);
+    const result2 = await db.query("SELECT * FROM user_books");
+
+    res.render("index.ejs", { books: result.rows, userBooks: result2.rows });
+  } catch (err) {
+    console.error("Error sorting books:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

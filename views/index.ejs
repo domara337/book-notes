@@ -4,9 +4,12 @@
   <h1 class="mb-4 text-primary">Books List</h1>
   <a href="/insert" class="btn btn-success mb-4">Add New Book</a>
 
+  
+   <!--loop through the books table items-->
   <% books.forEach(book => { %>
     <div class="row mb-5 p-3 bg-dark text-light rounded shadow-sm">
       <div class="col-md-3 text-center mb-3 mb-md-0">
+          <!--if there is a cover id, set it to the img-->
         <% if (book.cover_id) { %>
           <img src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-M.jpg" alt="Book Cover" class="img-fluid rounded" />
         <% } else { %>
@@ -15,6 +18,7 @@
       </div>
 
       <div class="col-md-9">
+        <!--displaying book titile and book author-->
         <h3 class="text-info"><%= book.title %> by <%= book.author %></h3>
 
         <!-- Delete Book Form -->
@@ -49,12 +53,13 @@
                     value="<%= new Date(userbook.date_read).toISOString().split('T')[0] %>">
                 </div>
 
+                <!--rating field-->
                 <div class="mb-2">
                   <label for="rating_<%= userbook.book_id %>">Rating (1–10):</label>
                   <input type="number" name="rating" id="rating_<%= userbook.book_id %>" class="form-control" min="1" max="10"
                     value="<%= userbook.rating %>">
                 </div>
-
+                <!--review rating-->
                 <div class="mb-2">
                   <label for="review_<%= userbook.book_id %>">Review:</label>
                   <textarea name="review" id="review_<%= userbook.book_id %>" class="form-control"><%= userbook.review %></textarea>
