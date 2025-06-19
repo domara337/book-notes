@@ -1,67 +1,87 @@
 <%- include('partials/header', { title: 'Books List' }) %>
 
-
-
-
 <div class="container my-5">
   <h1 class="mb-4 text-primary">Books List</h1>
   <a href="/insert" class="btn btn-success mb-4">Add New Book</a>
 
-
-  <!--loop through the books database and find the cover_id-->
+  
+   <!--loop through the books table items-->
   <% books.forEach(book => { %>
-    
-
     <div class="row mb-5 p-3 bg-dark text-light rounded shadow-sm">
       <div class="col-md-3 text-center mb-3 mb-md-0">
+          <!--if there is a cover id, set it to the img-->
         <% if (book.cover_id) { %>
           <img src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-M.jpg" alt="Book Cover" class="img-fluid rounded" />
         <% } else { %>
           <p>No cover available</p>
         <% } %>
       </div>
-      
-      <!--book details-->
+
       <div class="col-md-9">
-        <h3 class="text-info"><%= book.title %> by <%= book.author %></small></h3>
-      
-      <!--delete form-->
-      <form action="/delete"  method="POST">
-        <input type="hidden" name="deleteItemId" value="<%=book.id%>">
-        <button type="submit" class="btn btn-danger btn-sm">delete</button>
+        <!--displaying book titile and book author-->
+        <h3 class="text-info"><%= book.title %> by <%= book.author %></h3>
 
+        <!-- Delete Book Form -->
+        <form action="/delete" method="POST">
+          <input type="hidden" name="deleteItemId" value="<%= book.id %>">
+          <button type="submit" class="btn btn-danger btn-sm mb-2">Delete</button>
+        </form>
 
-
-      </form>
-      
-      
-      
-      
-      
-        <!--filter the review-->
-        <% const matchingUserBooks=userBooks.filter(userBook=> Number(userBook.book_id)===Number(book.id)) %>
-       
-
+        <!-- User Reviews -->
+        <% const matchingUserBooks = userBooks.filter(userBook => Number(userBook.book_id) === Number(book.id)) %>
 
         <% if (matchingUserBooks.length > 0) { %>
           <% matchingUserBooks.forEach(userbook => { %>
-             <!--display the date read and reccomendation-->
-           <small class="recommendation">DATE READ: <%= new Date(userbook.date_read).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %> 
-            HOW STRONGLY I RECOMMEND IT:- <%= userbook.rating %>/10</small>
+            <div class="mb-3">
+              <small class="recommendation d-block">
+                DATE READ:
+                <%= new Date(userbook.date_read).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %><br>
+                HOW STRONGLY I RECOMMEND IT: <%= userbook.rating %>/10
+              </small>
+              <p><%= userbook.review || "No review available." %></p>
 
-            <% if (userbook.review) { %>
-              <p><%= userbook.review %></p>
-            <% } else { %>
-              <p>No reviews available.</p>
-            <% } %>
+              <!-- Edit Button -->
+              <button class="btn btn-warning btn-sm mb-2" onclick="toggleEditForm('<%= userbook.book_id %>')">Edit</button>
+
+              <!-- Edit Form -->
+              <form id="edit-form-<%= userbook.book_id %>" action="/edit" method="POST" hidden class="mb-3">
+                <input type="hidden" name="book_id" value="<%= userbook.book_id %>">
+                
+                <div class="mb-2">
+                  <label for="date_read_<%= userbook.book_id %>">Date Read:</label>
+                  <input type="date" name="date_read" id="date_read_<%= userbook.book_id %>" class="form-control"
+                    value="<%= new Date(userbook.date_read).toISOString().split('T')[0] %>">
+                </div>
+
+                <!--rating field-->
+                <div class="mb-2">
+                  <label for="rating_<%= userbook.book_id %>">Rating (1–10):</label>
+                  <input type="number" name="rating" id="rating_<%= userbook.book_id %>" class="form-control" min="1" max="10"
+                    value="<%= userbook.rating %>">
+                </div>
+                <!--review rating-->
+                <div class="mb-2">
+                  <label for="review_<%= userbook.book_id %>">Review:</label>
+                  <textarea name="review" id="review_<%= userbook.book_id %>" class="form-control"><%= userbook.review %></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-sm">Save Changes</button>
+              </form>
+            </div>
           <% }) %>
         <% } else { %>
           <p>No reviews available.</p>
         <% } %>
-
       </div>
     </div>
   <% }) %>
 </div>
+
+<script>
+  function toggleEditForm(bookId) {
+    const form = document.getElementById("edit-form-" + bookId);
+    if (form) form.hidden = !form.hidden;
+  }
+</script>
 
 <%- include('partials/footer') %>
