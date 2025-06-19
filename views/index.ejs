@@ -50,7 +50,7 @@
                 <div class="mb-2">
                   <label for="date_read_<%= userbook.book_id %>">Date Read:</label>
                   <input type="date" name="date_read" id="date_read_<%= userbook.book_id %>" class="form-control"
-                    value="<%= new Date(userbook.date_read).toISOString().split('T')[0] %>">
+                    value="<%= new Date(userbook.date_read).toLocaleDateString('en-CA') %>">
                 </div>
 
                 <!--rating field-->

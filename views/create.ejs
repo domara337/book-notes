@@ -4,19 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    
-    <!--post form to insert data-->
-    <form action="/add_books" method="POST">
-        <input name="username" placeholder="Your Name" required/>
-        <input name="title" placeholder="Book Title" required/>
-        <input name="author" placeholder="Author" required/>
-        
-        <input name="rating" type="number" min="0" max="10" required/>
-        <textarea name="review" placeholder="What did you think?"></textarea>
-        <input name="date_read" type="date" required />
-        <button type="submit">Add Book</button>
-    </form>
-</body>
-</html>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Add a Book</h4>
+                    </div>
+                    <div class="card-body">
+                        <!--post form to insert data-->
+                        <form action="/add_books" method="POST">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Your Name</label>
+                                <input id="username" name="username" class="form-control" placeholder="Your Name" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Book Title</label>
+                                <input id="title" name="title" class="form-control" placeholder="Book Title" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="author" class="form-label">Author</label>
+                                <input id="author" name="author" class="form-control" placeholder="Author" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="rating" class="form-label">Rating (0-10)</label>
+                                <input id="rating" name="rating" type="number" min="0" max="10" class="form-control" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="review" class="form-label">Review</label>
+                                <textarea id="review" name="review" class="form-control" placeholder="What did you think?" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="date_read" class="form-label">Date Read</label>
+                                <input id="date_read" name="date_read" type="date" class="form-control" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Add Book</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
